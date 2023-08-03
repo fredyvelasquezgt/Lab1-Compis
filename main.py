@@ -7,36 +7,40 @@ from yaplWalker import yaplWalker
 from yaplErrorListener import yaplErrorListener
 
 
-def main(argv):
-    input = FileStream(argv[1])
+def process_yapl_file(file_path):
+    input_stream = FileStream(file_path)
 
-    lexer = yaplLexer(input)
+    lexer = yaplLexer(input_stream)
     lexer.removeErrorListeners()
     lexer.addErrorListener(yaplErrorListener())
 
-    stream = CommonTokenStream(lexer)
-    stream.fill()
+    token_stream = CommonTokenStream(lexer)
+    token_stream.fill()
 
     print("Tokens:")
-    for token in stream.tokens:
+    for token in token_stream.tokens:
         print(token)
 
-    parser = yaplParser(stream)
+    parser = yaplParser(token_stream)
     parser.removeErrorListeners()
     parser.addErrorListener(yaplErrorListener())
 
-    tree = parser.prog()
+    parse_tree = parser.prog()
     print("\nParse Tree:")
-    # print(tree.toStringTree(parser.ruleNames))
+    # print(parse_tree.toStringTree(parser.ruleNames))
 
-    walker = yaplWalker()
-    walker.initSymbolTable()
-    walker.visit(tree)
+    symbol_walker = yaplWalker()
+    symbol_walker.initSymbolTable()
+    symbol_walker.visit(parse_tree)
 
     print("\nSymbol Table:")
-    for record in walker.symbolTable.records:
+    for record in symbol_walker.symbolTable.records:
         print("Symbol", record.toString())
         # print(record.id)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    if len(sys.argv) != 2:
+        print("Usage: python your_script_name.py <input_file>")
+    else:
+        input_file = sys.argv[1]
+        process_yapl_file(input_file)
