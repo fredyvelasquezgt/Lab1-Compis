@@ -3,3 +3,4 @@
 ## Autores 
 
 - Fredy Velasquez
+- Jorge Caballeros
