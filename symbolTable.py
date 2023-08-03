@@ -1,28 +1,26 @@
 
-class Symbol():
+class Symbol:
 
-    def __init__(self, kind, id, line, column, value):
-        self.kind = kind
-        self.id = id
-        self.line = line
-        self.column = column
-        self.value = value
+    def __init__(self, details):
+        self.details = details
 
-    def toString(self):
-        return "Id: {id}, Kind: {kind}, Line: {line}, Column: {column}, Value: {value}".format(
-            kind=self.kind,
-            id=self.id,
-            line=self.line,
-            column=self.column,
-            value=self.value
-        )
+    def to_string(self):
+        return ", ".join(f"{key}: {value}" for key, value in self.details.items())
 
 
-class SymbolTable():
+class SymbolTable:
 
     def __init__(self):
         self.records = []
 
     def add(self, kind, id, line=None, column=None, value=None, is_array=False):
-        if not is_array:
-            self.records.append(Symbol(kind, id, line, column, value))
+        details = {
+            "Kind": kind,
+            "Id": id,
+            "Line": line,
+            "Column": column,
+            "Value": value
+        }
+        if is_array:
+            details["Is Array"] = is_array
+        self.records.append(Symbol(details))
